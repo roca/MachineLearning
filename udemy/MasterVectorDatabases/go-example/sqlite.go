@@ -9,8 +9,8 @@ import (
 )
 
 func sqlite() {
-	os.Remove("sqlite-database.sqlite3") // I delete the file to avoid duplicated records. 
-                                    // SQLite is a file based database.
+	os.Remove("sqlite-database.sqlite3") // I delete the file to avoid duplicated records.
+	// SQLite is a file based database.
 
 	log.Println("Creating sqlite-database.sqlite3...")
 	file, err := os.Create("sqlite-database.sqlite3") // Create SQLite file
@@ -21,68 +21,57 @@ func sqlite() {
 	log.Println("sqlite-database.sqlite3 created")
 
 	sqliteDatabase, _ := sql.Open("sqlite3", "./sqlite-database.sqlite3") // Open the created SQLite File
-	defer sqliteDatabase.Close() // Defer Closing the database
-	createTable(sqliteDatabase) // Create Database Tables
+	defer sqliteDatabase.Close()                                          // Defer Closing the database
+	createTable(sqliteDatabase)                                           // Create Database Tables
 
-        // INSERT RECORDS
-	insertStudent(sqliteDatabase, "0001", "Liana Kim", "Bachelor")
-	insertStudent(sqliteDatabase, "0002", "Glen Rangel", "Bachelor")
-	insertStudent(sqliteDatabase, "0003", "Martin Martins", "Master")
-	insertStudent(sqliteDatabase, "0004", "Alayna Armitage", "PHD")
-	insertStudent(sqliteDatabase, "0005", "Marni Benson", "Bachelor")
-	insertStudent(sqliteDatabase, "0006", "Derrick Griffiths", "Master")
-	insertStudent(sqliteDatabase, "0007", "Leigh Daly", "Bachelor")
-	insertStudent(sqliteDatabase, "0008", "Marni Benson", "PHD")
-	insertStudent(sqliteDatabase, "0009", "Klay Correa", "Bachelor")
+	// INSERT RECORDS
+	insertStock(sqliteDatabase, "TESLA")
+	insertStock(sqliteDatabase, "Microsoft")
 
-        // DISPLAY INSERTED RECORDS
-	displayStudents(sqliteDatabase)
+	// DISPLAY INSERTED RECORDS
+	displayStocks(sqliteDatabase)
 }
 
 func createTable(db *sql.DB) {
-	createStudentTableSQL := `CREATE TABLE student (
-		"idStudent" integer NOT NULL PRIMARY KEY AUTOINCREMENT,		
-		"code" TEXT,
-		"name" TEXT,
-		"program" TEXT		
+	createStudentTableSQL := `CREATE TABLE IF NOT EXISTS stocks (
+		stock_code INTEGER PRIMARY KEY,		
+		stock_name TEXT NOT NULL	
 	  );` // SQL Statement for Create Table
 
-	log.Println("Create student table...")
+	log.Println("Create stock table...")
 	statement, err := db.Prepare(createStudentTableSQL) // Prepare SQL Statement
 	if err != nil {
 		log.Fatal(err.Error())
 	}
 	statement.Exec() // Execute SQL Statements
-	log.Println("student table created")
+	log.Println("stock table created")
 }
 
 // We are passing db reference connection from main to our method with other parameters
-func insertStudent(db *sql.DB, code string, name string, program string) {
-	log.Println("Inserting student record ...")
-	insertStudentSQL := `INSERT INTO student(code, name, program) VALUES (?, ?, ?)`
-	statement, err := db.Prepare(insertStudentSQL) // Prepare statement. 
-                                                   // This is good to avoid SQL injections
+func insertStock(db *sql.DB, name string) {
+	log.Println("Inserting stock record ...")
+	insertStockSQL := `INSERT INTO stocks (stock_name) VALUES (?)`
+	statement, err := db.Prepare(insertStockSQL) // Prepare statement.
+	// This is good to avoid SQL injections
 	if err != nil {
 		log.Fatalln(err.Error())
 	}
-	_, err = statement.Exec(code, name, program)
+	_, err = statement.Exec(name)
 	if err != nil {
 		log.Fatalln(err.Error())
 	}
 }
 
-func displayStudents(db *sql.DB) {
-	row, err := db.Query("SELECT * FROM student ORDER BY name")
+func displayStocks(db *sql.DB) {
+	row, err := db.Query("SELECT * FROM stocks ORDER BY stock_code")
 	if err != nil {
 		log.Fatal(err)
 	}
 	defer row.Close()
 	for row.Next() { // Iterate and fetch the records from result cursor
-		var id int
-		var code string
+		var code int
 		var name string
-		var program string
-		row.Scan(&id, &code, &name, &program)
-		log.Println("Student: ", code, " ", name, " ", program)
+		row.Scan(&code, &name)
+		log.Println("Stock: ", code, " ", name)
 	}
 }
