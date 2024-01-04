@@ -10,3 +10,5 @@
 - [What is on the 'The Data Stack' Podcast](https://open.spotify.com/episode/0MTbnJnCquGMrthlIGMGe5?si=b043c3f4f9844310)
 
 - [go-openai](https://github.com/sashabaranov/go-openai)
+
+- [Golang SQLite Simple Example](https://www.codeproject.com/Articles/5261771/Golang-SQLite-Simple-Example)
