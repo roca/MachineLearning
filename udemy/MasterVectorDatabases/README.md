@@ -9,4 +9,4 @@
 
 - [What is on the 'The Data Stack' Podcast](https://open.spotify.com/episode/0MTbnJnCquGMrthlIGMGe5?si=b043c3f4f9844310)
 
-- [openai-go](https://github.com/0x9ef/openai-go?tab=readme-ov-file)
+- [go-openai](https://github.com/sashabaranov/go-openai)
