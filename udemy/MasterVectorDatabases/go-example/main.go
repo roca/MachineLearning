@@ -1,7 +1,6 @@
 package main
 
 import (
-	"context"
 	"fmt"
 	"os"
 
@@ -21,20 +20,22 @@ func setupOpenAITestServer() (client *openai.Client) {
 
 func main() {
 
-	//client := openai.NewClient(os.Getenv("OPEN_API_KEY"))
-	client := setupOpenAITestServer()
-	resp, err := client.CreateEmbeddings(context.Background(), openai.EmbeddingRequest{
-		Input: []string{
-			"The food was delicious and the waiter",
-			"Other examples of embedding request",
-		},
-		Model: openai.AdaEmbeddingV2,
-	})
+	sqlite()
 
-	if err != nil {
-		fmt.Printf("CreateEmbeddings error: %v\n", err)
-		return
-	}
+	// //client := openai.NewClient(os.Getenv("OPEN_API_KEY"))
+	// client := setupOpenAITestServer()
+	// resp, err := client.CreateEmbeddings(context.Background(), openai.EmbeddingRequest{
+	// 	Input: []string{
+	// 		"The food was delicious and the waiter",
+	// 		"Other examples of embedding request",
+	// 	},
+	// 	Model: openai.AdaEmbeddingV2,
+	// })
 
-	fmt.Println(resp.Data[0].Embedding)
+	// if err != nil {
+	// 	fmt.Printf("CreateEmbeddings error: %v\n", err)
+	// 	return
+	// }
+
+	// fmt.Println(resp.Data[0].Embedding)
 }
