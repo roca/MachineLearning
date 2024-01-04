@@ -2,34 +2,33 @@ package main
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
-	"log"
 	"os"
 
-	openai "github.com/0x9ef/openai-go"
+	openai "github.com/sashabaranov/go-openai"
 )
 
 func main() {
 	fmt.Println(os.Getenv("OPEN_API_KEY"))
 
-	e := openai.New(os.Getenv("OPEN_API_KEY"))
-	r, err := e.Completion(context.Background(), &openai.CompletionOptions{
-		// Choose model, you can see list of available models in models.go file
-		Model: openai.ModelGPT3TextDavince,
-		// Text to completion
-		Prompt: []string{"Write a little bit of Wikipedia. What is that?"},
-	})
+	client := openai.NewClient(os.Getenv("OPEN_API_KEY"))
+	resp, err := client.CreateChatCompletion(
+		context.Background(),
+		openai.ChatCompletionRequest{
+			Model: openai.GPT3Dot5Turbo,
+			Messages: []openai.ChatCompletionMessage{
+				{
+					Role:    openai.ChatMessageRoleUser,
+					Content: "Hello!",
+				},
+			},
+		},
+	)
+
 	if err != nil {
-		log.Fatal(err)
+		fmt.Printf("ChatCompletion error: %v\n", err)
+		return
 	}
 
-	if b, err := json.MarshalIndent(r, "", "  "); err != nil {
-		panic(err)
-	} else {
-		fmt.Println(string(b))
-	}
-
-	// Wikipedia is a free online encyclopedia, created and edited by volunteers.
-	fmt.Println("What is the Wikipedia?", r.Choices[0].Text)
+	fmt.Println(resp.Choices[0].Message.Content)
 }
