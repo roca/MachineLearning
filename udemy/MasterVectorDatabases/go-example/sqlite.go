@@ -11,7 +11,8 @@ import (
 	_ "github.com/mattn/go-sqlite3" // Import go-sqlite3 library
 )
 
-func sqlite() {
+
+func sqlite(vectors ...[]float64) {
 	os.Remove("vector.sqlite3") // I delete the file to avoid duplicated records.
 	// SQLite is a file based database.
 
@@ -28,8 +29,9 @@ func sqlite() {
 	createTable(sqliteDatabase)                                  // Create Database Tables
 
 	// INSERT RECORDS
-	insertVector(sqliteDatabase, []float64{1.3, 3.5, 2.2, 0.9, 0.6, 1.5})
-	insertVector(sqliteDatabase, []float64{2.8, 1.6, 3.8, 2.2, 3.2, 17.0})
+	for _, vector := range vectors {
+		insertVector(sqliteDatabase, vector)
+	}
 
 	// DISPLAY INSERTED RECORDS
 	displayVectors(sqliteDatabase)
@@ -64,7 +66,7 @@ func decode(src []byte) []float64 {
 		return nil
 	}
 
-	l := len(src) / 4
+	l := len(src) / 8
 	ptr := unsafe.Pointer(&src[0])
 	// It is important to keep in mind that the Go garbage collector
 	// will not interact with this data, and that if src if freed,
@@ -98,6 +100,6 @@ func displayVectors(db *sql.DB) {
 		var id int
 		var vector []byte
 		row.Scan(&id, &vector)
-		log.Println("Vector: ", id, " ", decode(vector))
+		log.Println("Vector: ", id, " length", len(decode(vector)))
 	}
 }
