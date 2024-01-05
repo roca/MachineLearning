@@ -103,3 +103,17 @@ func displayVectors(db *sql.DB) {
 		log.Println("Vector: ", id, " length", len(decode(vector)))
 	}
 }
+
+func findVectors(db *sql.DB, vector []float64) {
+	row, err := db.Query("SELECT * FROM vectors ORDER BY ABS(vector - ?) LIMIT 1", encode(vector))
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer row.Close()
+	for row.Next() { // Iterate and fetch the records from result cursor
+		var id int
+		var vector []byte
+		row.Scan(&id, &vector)
+		log.Println("Vector: ", id, " length", len(decode(vector)))
+	}
+}
