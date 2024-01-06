@@ -38,10 +38,19 @@ func main() {
 
 	fmt.Println("Embedding length for a 'dog': ", len(resp.Data[0].Embedding))
 
-	v1 := []float64{2.8, 1.6, 3.8, 2.2, 3.2, 17.3}
-	v2 := []float64{1.3, 3.5, 2.2, 0.9, 0.6, 1.5}
+	v1 := []float64{2.8, 1.6, 3.8, 2.2}
+	v2 := []float64{1.3, 3.5, 2.2, 0.9}
+	v3 := convertFloat32ToFloat64(resp.Data[0].Embedding)
 
-	sqlite(v1, v2, convertFloat32ToFloat64(resp.Data[0].Embedding))
+	sqlite()
+	defer sqliteDatabase.Close()     
+	insertVector(v1)
+	insertVector(v2)
+	insertVector(v3)
+
+
+	vectors := findVectors(v2)
+	fmt.Println("Found vectors: ", vectors)
 }
 
 func convertFloat32ToFloat64(fs []float32) []float64 {

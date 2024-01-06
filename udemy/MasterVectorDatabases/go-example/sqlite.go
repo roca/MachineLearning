@@ -4,47 +4,92 @@ import (
 	"bytes"
 	"database/sql"
 	"encoding/binary"
+	"fmt"
 	"log"
-	"os"
 	"unsafe"
 
 	_ "github.com/mattn/go-sqlite3" // Import go-sqlite3 library
 )
 
+var sqliteDatabase *sql.DB
 
 func sqlite(vectors ...[]float64) {
-	os.Remove("vector.sqlite3") // I delete the file to avoid duplicated records.
-	// SQLite is a file based database.
+	// os.Remove("vector.sqlite3") // I delete the file to avoid duplicated records.
+	// // SQLite is a file based database.
 
-	log.Println("Creating vector.sqlite3...")
-	file, err := os.Create("vector.sqlite3") // Create SQLite file
-	if err != nil {
-		log.Fatal(err.Error())
-	}
-	file.Close()
-	log.Println("vector.sqlite3 created")
+	// log.Println("Creating vector.sqlite3...")
+	// file, err := os.Create("vector.sqlite3") // Create SQLite file
+	// if err != nil {
+	// 	log.Fatal(err.Error())
+	// }
+	// file.Close()
+	// log.Println("vector.sqlite3 created")
 
-	sqliteDatabase, _ := sql.Open("sqlite3", "./vector.sqlite3") // Open the created SQLite File
-	defer sqliteDatabase.Close()                                 // Defer Closing the database
-	createTable(sqliteDatabase)                                  // Create Database Tables
+	sqliteDatabase, _ = sql.Open("sqlite3", "vector2.sqlite3") // Open the created SQLite File
+	// Defer Closing the database
+
+	// installVss()  // Install VSS
+	createTable() // Create Database Tables
+	clearTable()  // Clear Database Tables
 
 	// INSERT RECORDS
 	for _, vector := range vectors {
-		insertVector(sqliteDatabase, vector)
+		insertVector(vector)
 	}
 
 	// DISPLAY INSERTED RECORDS
-	displayVectors(sqliteDatabase)
+	displayVectors()
 }
 
-func createTable(db *sql.DB) {
-	createStudentTableSQL := `CREATE TABLE IF NOT EXISTS vectors (
-		vector_id INTEGER PRIMARY KEY,		
-		vector BLOB NOT NULL	
-	  );` // SQL Statement for Create Table
+func installVss() {
+	// stmt := `
+	// .load ./vector0
+	// .load ./vss0
+	// create virtual table vss_vectors using vss0( vector_embedding(384) );
+	// `
+
+	// log.Println("Loading vss...")
+	// statement, err := sqliteDatabase.Prepare(stmt) // Prepare SQL Statement
+	// if err != nil {
+	// 	log.Fatal(err.Error())
+	// }
+	// _, err = statement.Exec() // Execute SQL Statements
+	// if err != nil {
+	// 	log.Fatal(err.Error())
+	// }
+	// log.Println("vss loaded")
+
+	var version, vector string
+	err := sqliteDatabase.QueryRow("SELECT vss_version(), vector_to_json(?)", []byte{0x00, 0x00, 0x28, 0x42}).Scan(&version, &vector)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	fmt.Printf("version=%s vector=%s\n", version, vector)
+}
+
+func clearTable() {
+	clearTableSQL := `DELETE FROM vectors;`
+	log.Println("Clearing vector table...")
+	statement, err := sqliteDatabase.Prepare(clearTableSQL) // Prepare SQL Statement
+	if err != nil {
+		log.Fatal(err.Error())
+	}
+	statement.Exec() // Execute SQL Statements
+	log.Println("vector table cleared")
+}
+
+func createTable() {
+	createStudentTableSQL := `
+	-- CREATE TABLE IF NOT EXISTS vectors (
+	--	vector_id INTEGER PRIMARY KEY,		
+	--	vector BLOB NOT NULL	
+	--);
+	DELETE FROM vectors;
+	` // SQL Statement for Create Table
 
 	log.Println("Create vector table...")
-	statement, err := db.Prepare(createStudentTableSQL) // Prepare SQL Statement
+	statement, err := sqliteDatabase.Prepare(createStudentTableSQL) // Prepare SQL Statement
 	if err != nil {
 		log.Fatal(err.Error())
 	}
@@ -76,10 +121,10 @@ func decode(src []byte) []float64 {
 }
 
 // We are passing db reference connection from main to our method with other parameters
-func insertVector(db *sql.DB, vector []float64) {
+func insertVector(vector []float64) {
 	log.Println("Inserting vector record ...")
 	insertVectorSQL := `INSERT INTO vectors (vector) VALUES (?)`
-	statement, err := db.Prepare(insertVectorSQL) // Prepare statement.
+	statement, err := sqliteDatabase.Prepare(insertVectorSQL) // Prepare statement.
 	// This is good to avoid SQL injections
 	if err != nil {
 		log.Fatalln(err.Error())
@@ -90,8 +135,8 @@ func insertVector(db *sql.DB, vector []float64) {
 	}
 }
 
-func displayVectors(db *sql.DB) {
-	row, err := db.Query("SELECT * FROM vectors ORDER BY vector_id")
+func displayVectors() {
+	row, err := sqliteDatabase.Query("SELECT * FROM vectors ORDER BY vector_id")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -104,8 +149,9 @@ func displayVectors(db *sql.DB) {
 	}
 }
 
-func findVectors(db *sql.DB, vector []float64) {
-	row, err := db.Query("SELECT * FROM vectors ORDER BY ABS(vector - ?) LIMIT 1", encode(vector))
+func findVectors(vector []float64) [][]float64 {
+	var vectors [][]float64
+	row, err := sqliteDatabase.Query("SELECT * FROM vectors WHERE vector == ?", encode(vector))
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -115,5 +161,7 @@ func findVectors(db *sql.DB, vector []float64) {
 		var vector []byte
 		row.Scan(&id, &vector)
 		log.Println("Vector: ", id, " length", len(decode(vector)))
+		vectors = append(vectors, decode(vector))
 	}
+	return vectors
 }
