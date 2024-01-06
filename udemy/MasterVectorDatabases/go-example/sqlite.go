@@ -28,7 +28,7 @@ func sqlite(vectors ...[]float64) {
 	sqliteDatabase, _ = sql.Open("sqlite3", "vector2.sqlite3") // Open the created SQLite File
 	// Defer Closing the database
 
-	// installVss()  // Install VSS
+	installVss()  // Install VSS
 	createTable() // Create Database Tables
 	clearTable()  // Clear Database Tables
 
@@ -42,25 +42,30 @@ func sqlite(vectors ...[]float64) {
 }
 
 func installVss() {
-	// stmt := `
-	// .load ./vector0
-	// .load ./vss0
-	// create virtual table vss_vectors using vss0( vector_embedding(384) );
-	// `
-
-	// log.Println("Loading vss...")
-	// statement, err := sqliteDatabase.Prepare(stmt) // Prepare SQL Statement
-	// if err != nil {
-	// 	log.Fatal(err.Error())
-	// }
-	// _, err = statement.Exec() // Execute SQL Statements
-	// if err != nil {
-	// 	log.Fatal(err.Error())
-	// }
-	// log.Println("vss loaded")
+	_,err := sqliteDatabase.Exec("./load ./vector0")
+	if err != nil {
+		log.Fatal(err)
+	}
+	_, err = sqliteDatabase.Exec("./load ./vss0")
+	if err != nil {
+		log.Fatal(err)
+	}
+	stmt := `
+		create virtual table vss_vectors using vss0( vector_embedding(384) );
+	`
+	log.Println("Loading vss...")
+	statement, err := sqliteDatabase.Prepare(stmt) // Prepare SQL Statement
+	if err != nil {
+		log.Fatal(err.Error())
+	}
+	_, err = statement.Exec() // Execute SQL Statements
+	if err != nil {
+		log.Fatal(err.Error())
+	}
+	log.Println("vss loaded")
 
 	var version, vector string
-	err := sqliteDatabase.QueryRow("SELECT vss_version(), vector_to_json(?)", []byte{0x00, 0x00, 0x28, 0x42}).Scan(&version, &vector)
+	err = sqliteDatabase.QueryRow("SELECT vss_version(), vector_to_json(?)", []byte{0x00, 0x00, 0x28, 0x42}).Scan(&version, &vector)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -123,13 +128,13 @@ func decode(src []byte) []float64 {
 // We are passing db reference connection from main to our method with other parameters
 func insertVector(vector []float64) {
 	log.Println("Inserting vector record ...")
-	insertVectorSQL := `INSERT INTO vectors (vector) VALUES (?)`
+	insertVectorSQL := `INSERT INTO vss_vectors (vector) VALUES (?)`
 	statement, err := sqliteDatabase.Prepare(insertVectorSQL) // Prepare statement.
 	// This is good to avoid SQL injections
 	if err != nil {
 		log.Fatalln(err.Error())
 	}
-	_, err = statement.Exec(encode(vector))
+	_, err = statement.Exec(vector)
 	if err != nil {
 		log.Fatalln(err.Error())
 	}

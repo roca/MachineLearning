@@ -1,3 +1,6 @@
 go 1.21.4
 
-use ./go-example
+use (
+	./go-example
+	./sqlite-vss/examples/go
+)
