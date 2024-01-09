@@ -12,3 +12,5 @@
 - [go-openai](https://github.com/sashabaranov/go-openai)
 
 - [Golang SQLite Simple Example](https://www.codeproject.com/Articles/5261771/Golang-SQLite-Simple-Example)
+
+- [Run Chroma DB on a local machine and as a Docker container](https://abhishektatachar.medium.com/run-chroma-db-on-a-local-machine-and-as-a-docker-container-a9d4b91d2a97)
