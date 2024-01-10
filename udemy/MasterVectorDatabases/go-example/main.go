@@ -1,17 +1,14 @@
 package main
 
 import (
-	"context"
-	"fmt"
-	"os"
-
 	openai "github.com/sashabaranov/go-openai"
 )
 
 var client *openai.Client
 
 func init() {
-	client = openai.NewClient(os.Getenv("OPEN_API_KEY"))
+	azure()
+	//client = openai.NewClient(os.Getenv("OPEN_API_KEY"))
 	// config = openai.DefaultConfig(os.Getenv("OPEN_API_KEY"))
 	// // config.BaseURL = "/v1"
 	// // config.BaseURL = "https://chatgpt.regeneron.com/chat"
@@ -22,36 +19,37 @@ func init() {
 	return
 }
 
-func main() {
+func main() {}
 
-	resp, err := client.CreateEmbeddings(context.Background(), openai.EmbeddingRequest{
-		Input: []string{
-			"dog",
-		},
-		Model: openai.AdaEmbeddingV2,
-	})
+// func main() {
 
-	if err != nil {
-		fmt.Printf("CreateEmbeddings error: %v\n", err)
-		return
-	}
+// 	resp, err := client.CreateEmbeddings(context.Background(), openai.EmbeddingRequest{
+// 		Input: []string{
+// 			"dog",
+// 		},
+// 		Model: openai.AdaEmbeddingV2,
+// 	})
 
-	fmt.Println("Embedding length for a 'dog': ", len(resp.Data[0].Embedding))
+// 	if err != nil {
+// 		fmt.Printf("CreateEmbeddings error: %v\n", err)
+// 		return
+// 	}
 
-	v1 := []float64{2.8, 1.6, 3.8, 2.2}
-	v2 := []float64{1.3, 3.5, 2.2, 0.9}
-	v3 := convertFloat32ToFloat64(resp.Data[0].Embedding)
+// 	fmt.Println("Embedding length for a 'dog': ", len(resp.Data[0].Embedding))
 
-	sqlite()
-	defer sqliteDatabase.Close()     
-	insertVector(v1)
-	insertVector(v2)
-	insertVector(v3)
+// 	v1 := []float64{2.8, 1.6, 3.8, 2.2}
+// 	v2 := []float64{1.3, 3.5, 2.2, 0.9}
+// 	v3 := convertFloat32ToFloat64(resp.Data[0].Embedding)
 
+// 	sqlite()
+// 	defer sqliteDatabase.Close()
+// 	insertVector(v1)
+// 	insertVector(v2)
+// 	insertVector(v3)
 
-	vectors := findVectors(v2)
-	fmt.Println("Found vectors: ", vectors)
-}
+// 	vectors := findVectors(v2)
+// 	fmt.Println("Found vectors: ", vectors)
+// }
 
 func convertFloat32ToFloat64(fs []float32) []float64 {
 	result := make([]float64, len(fs))
