@@ -1,5 +1,6 @@
 go 1.21.4
 
 use (
-	./go-example
+	./go-example-01
+	./go-example-02
 )

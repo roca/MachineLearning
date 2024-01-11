@@ -14,3 +14,5 @@
 - [Golang SQLite Simple Example](https://www.codeproject.com/Articles/5261771/Golang-SQLite-Simple-Example)
 
 - [Run Chroma DB on a local machine and as a Docker container](https://abhishektatachar.medium.com/run-chroma-db-on-a-local-machine-and-as-a-docker-container-a9d4b91d2a97)
+
+- [A simple Chroma Vector Database client written in Go](https://github.com/amikos-tech/chroma-go)
