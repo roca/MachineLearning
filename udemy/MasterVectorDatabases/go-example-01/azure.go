@@ -7,6 +7,7 @@ import (
 	"os"
 
 	"github.com/Azure/azure-sdk-for-go/sdk/ai/azopenai"
+	"github.com/Azure/azure-sdk-for-go/sdk/azcore/policy"
 	"github.com/Azure/azure-sdk-for-go/sdk/azidentity"
 )
 
@@ -14,8 +15,10 @@ func azure() {
 	clientID := os.Getenv("AZURE_CLIENT_ID")
 	tenantID := os.Getenv("AZURE_TENANT_ID")
 	endpoint := os.Getenv("AZURE_OPENAI_ENDPOINT")
-	username := os.Getenv("AZURE_USERNAME")
-	password := os.Getenv("AZURE_PASSWORD")
+	username := os.Getenv("SVC_ACCOUNT")
+	password := os.Getenv("SVC_PASSWORD")
+	version := os.Getenv("OPENAI_API_VERSION")
+	//scope := os.Getenv("AZURE_APPLICATION_SCOPE")
 
 	//azureOpenAIKey := os.Getenv("API_API_KEY")
 	modelDeploymentID := "text-embedding-ada-002"
@@ -28,14 +31,19 @@ func azure() {
 	// 	return
 	// }
 
-	dac, err := azidentity.NewUsernamePasswordCredential(tenantID, clientID, username, password, nil)
+	dac, err := azidentity.NewUsernamePasswordCredential(tenantID, clientID, username, password, &azidentity.UsernamePasswordCredentialOptions{
+		ClientOptions: policy.ClientOptions{
+			APIVersion: version,
+			
+		},
+	})
 	if err != nil {
 		log.Fatal(err)
 	}
 
-
 	// token, _ := dac.GetToken(context.Background(), policy.TokenRequestOptions{
 	// 	TenantID: tenantID,
+	// 	Scopes:   []string{scope},
 	// })
 
 	// In Azure OpenAI you must deploy a model before you can use it in your client. For more information

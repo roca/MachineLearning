@@ -1,6 +1,7 @@
-ipackage main
+package main
 
 import (
+	"context"
 	"fmt"
 	"log"
 	"os"
@@ -14,6 +15,7 @@ func main() {
 	client := chroma.NewClient("http://localhost:8000")
 	collectionName := "test-collection"
 	metadata := map[string]interface{}{}
+	ctx := context.Background()
 	err := godotenv.Load(".env")
 	if err != nil {
 		fmt.Printf("Error loading .env file: %s", err)
@@ -21,11 +23,11 @@ func main() {
 	}
 	embeddingFunction := openai.NewOpenAIEmbeddingFunction(os.Getenv("OPENAI_API_KEY")) //create a new OpenAI Embedding function
 	distanceFunction := chroma.L2
-	_, errRest := client.Reset() //reset the database
+	_, errRest := client.Reset(ctx) //reset the database
 	if errRest != nil {
 		log.Fatalf("Error resetting database: %s \n", errRest.Error())
 	}
-	col, err := client.CreateCollection(collectionName, metadata, true, embeddingFunction, distanceFunction)
+	col, err := client.CreateCollection(ctx, collectionName, metadata, true, embeddingFunction, distanceFunction)
 	if err != nil {
 		fmt.Printf("Error create collection: %s \n", err.Error())
 		return
@@ -43,16 +45,16 @@ func main() {
 		{"key1": "value1"},
 		{"key2": "value2"},
 	}
-	_, addError := col.Add(nil, metadatas, documents, ids)
+	_, addError := col.Add(ctx, nil, metadatas, documents, ids)
 	if addError != nil {
 		log.Fatalf("Error adding documents: %s \n", addError)
 	}
-	countDocs, qrerr := col.Count()
+	countDocs, qrerr := col.Count(ctx)
 	if qrerr != nil {
 		log.Fatalf("Error counting documents: %s \n", qrerr)
 	}
 	fmt.Printf("countDocs: %v\n", countDocs) //this should result in 2
-	qr, qrerr := col.Query([]string{"I love dogs"}, 5, nil, nil, nil)
+	qr, qrerr := col.Query(ctx, []string{"I love dogs"}, 5, nil, nil, nil)
 	if qrerr != nil {
 		log.Fatalf("Error querying documents: %s \n", qrerr)
 	}

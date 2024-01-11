@@ -6,6 +6,15 @@ services:
     image: tensorflow/tensorflow:latest-jupyter
     environment:
       - ALLOW_RESET=true
+      - AZURE_CLIENT_ID=${AZURE_CLIENT_ID}
+      - AZURE_TENANT_ID=${AZURE_TENANT_ID}
+      - AZURE_OPENAI_ENDPOINT=${AZURE_OPENAI_ENDPOINT}
+      - AZURE_APPLICATION_SCOPE=${AZURE_APPLICATION_SCOPE}
+      - SVC_ACCOUNT=${SVC_ACCOUNT}
+      - SVC_PASSWORD=${SVC_PASSWORD}
+      - OPENAI_API_TYPE=${OPENAI_API_TYPE}
+      - OPENAI_API_BASE=${OPENAI_API_BASE}
+      - OPENAI_API_VERSION=${OPENAI_API_VERSION}
     ports:
       - "8888:8888"
     networks:
