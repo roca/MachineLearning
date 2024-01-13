@@ -6,7 +6,7 @@ services:
     image: tensorflow/tensorflow:latest-jupyter
     environment:
       - OPENAI_API_KEY=${OPENAI_API_KEY}
-      - ALLOW_RESET=true
+      - ALLOW_RESET=${ALLOW_RESET}
       - AZURE_CLIENT_ID=${AZURE_CLIENT_ID}
       - AZURE_TENANT_ID=${AZURE_TENANT_ID}
       - AZURE_OPENAI_ENDPOINT=${AZURE_OPENAI_ENDPOINT}
@@ -30,6 +30,8 @@ services:
     #   - "standalone"
   chroma:
     image: ghcr.io/chroma-core/chroma:latest
+    environment:
+      - ALLOW_RESET=TRUE
     volumes:
       - ./index_data:/chroma/.chroma/index
       - ./cache:/root/.cache

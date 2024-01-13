@@ -21,7 +21,10 @@ func main() {
 		fmt.Printf("Error loading .env file: %s", err)
 		return
 	}
-	embeddingFunction := openai.NewOpenAIEmbeddingFunction(os.Getenv("OPENAI_API_KEY")) //create a new OpenAI Embedding function
+	apiKey := os.Getenv("OPENAI_API_KEY")
+	fmt.Println("openaiApiKey: ",apiKey)
+
+	embeddingFunction := openai.NewOpenAIEmbeddingFunction(apiKey) //create a new OpenAI Embedding function
 	distanceFunction := chroma.L2
 	_, errRest := client.Reset(ctx) //reset the database
 	if errRest != nil {
@@ -32,6 +35,7 @@ func main() {
 		fmt.Printf("Error create collection: %s \n", err.Error())
 		return
 	}
+	//fmt.Println("col: ", col)
 	documents := []string{
 		"This is a document about cats. Cats are great.",
 		"this is a document about dogs. Dogs are great.",
