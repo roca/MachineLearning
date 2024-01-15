@@ -4,3 +4,4 @@ cache
 index_data
 bbc
 .env
+python/db
