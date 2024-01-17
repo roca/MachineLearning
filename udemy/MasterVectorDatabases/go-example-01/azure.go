@@ -6,9 +6,6 @@ import (
 	"log"
 	"os"
 
-	"github.com/Azure/azure-sdk-for-go/sdk/ai/azopenai"
-	"github.com/Azure/azure-sdk-for-go/sdk/azcore/policy"
-	"github.com/Azure/azure-sdk-for-go/sdk/azidentity"
 	"github.com/AzureAD/microsoft-authentication-library-for-go/apps/confidential"
 	"github.com/AzureAD/microsoft-authentication-library-for-go/apps/public"
 )
@@ -48,58 +45,57 @@ func getToken() public.AuthResult {
 func azure() {
 	clientID := os.Getenv("AZURE_CLIENT_ID")
 	tenantID := os.Getenv("AZURE_TENANT_ID")
-	endpoint := os.Getenv("AZURE_OPENAI_ENDPOINT")
+	//endpoint := os.Getenv("AZURE_ENDPOINT")
 	//baseEndpoint := os.Getenv("OPENAI_API_BASE")
 	username := os.Getenv("SVC_ACCOUNT")
 	password := os.Getenv("SVC_PASSWORD")
-	version := os.Getenv("OPENAI_API_VERSION")
+	// version := os.Getenv("OPENAI_API_VERSION")
 	//scope := os.Getenv("AZURE_APPLICATION_SCOPE")
 
-	//azureOpenAIKey := os.Getenv("API_API_KEY")
-	modelDeploymentID := "text-embedding-ada-002"
+	tenant := fmt.Sprintf("https://login.microsoftonline.com/%s", tenantID)
+	publicClientApp, err := public.New(clientID, public.WithAuthority(tenant))
+	if err != nil {
+		log.Fatalf("Calling New Error: %s", err)
+	}
+	accounts, _ := publicClientApp.Accounts(context.Background())
+	fmt.Println("publicClientApp: ", accounts)
 
-	// Ex: "https://<your-azure-openai-host>.openai.azure.com"
-	azureOpenAIEndpoint := endpoint
+	// cred, _ := confidential.NewCredFromSecret(password)
+	// confidentialClientApp, _ := confidential.New("", clientID, cred)
+	// acc, _ := confidentialClientApp.Account(context.Background(), clientID)
+	// fmt.Printf("confidentialClientApp: %v\n", acc.Name)
 
-	// if azureOpenAIKey == "" || modelDeploymentID == "" || azureOpenAIEndpoint == "" {
-	// 	fmt.Fprintf(os.Stderr, "Skipping example, environment variables missing\n")
-	// 	return
+	scopes := []string{os.Getenv("AZURE_APPLICATION_SCOPE")}
+
+	authResult, err := publicClientApp.AcquireTokenByUsernamePassword(context.Background(), scopes, username, password)
+	if err != nil {
+		log.Fatalf("Calling AcquireTokenByUsernamePassword Error: %s", err)
+	}
+
+	fmt.Println(authResult.AccessToken)
+
+	// // In Azure OpenAI you must deploy a model before you can use it in your client. For more information
+	// // see here: https://learn.microsoft.com/azure/cognitive-services/openai/how-to/create-resource
+	// client, err := azopenai.NewClient(azureOpenAIEndpoint, dac, nil)
+
+	// if err != nil {
+	// 	//  TODO: Update the following line with your application specific error handling logic
+	// 	log.Fatalf("ERROR: %s", err)
 	// }
 
-	dac, err := azidentity.NewUsernamePasswordCredential(tenantID, clientID, username, password, &azidentity.UsernamePasswordCredentialOptions{
-		ClientOptions: policy.ClientOptions{
-			APIVersion: version,
-		},
-	})
-	if err != nil {
-		log.Fatal(err)
-	}
+	// resp, err := client.GetEmbeddings(context.TODO(), azopenai.EmbeddingsOptions{
+	// 	Input:          []string{"The food was delicious and the waiter..."},
+	// 	DeploymentName: &modelDeploymentID,
+	// }, nil)
 
-	token := getToken()
-	fmt.Println(token.AccessToken)
+	// if err != nil {
+	// 	//  TODO: Update the following line with your application specific error handling logic
+	// 	log.Fatalf("ERROR: %s", err)
+	// }
 
-	// In Azure OpenAI you must deploy a model before you can use it in your client. For more information
-	// see here: https://learn.microsoft.com/azure/cognitive-services/openai/how-to/create-resource
-	client, err := azopenai.NewClient(azureOpenAIEndpoint, dac, nil)
-
-	if err != nil {
-		//  TODO: Update the following line with your application specific error handling logic
-		log.Fatalf("ERROR: %s", err)
-	}
-
-	resp, err := client.GetEmbeddings(context.TODO(), azopenai.EmbeddingsOptions{
-		Input:          []string{"The food was delicious and the waiter..."},
-		DeploymentName: &modelDeploymentID,
-	}, nil)
-
-	if err != nil {
-		//  TODO: Update the following line with your application specific error handling logic
-		log.Fatalf("ERROR: %s", err)
-	}
-
-	for _, embed := range resp.Data {
-		// embed.Embedding contains the embeddings for this input index.
-		fmt.Fprintf(os.Stderr, "Got embeddings for input %d\n", *embed.Index)
-	}
+	// for _, embed := range resp.Data {
+	// 	// embed.Embedding contains the embeddings for this input index.
+	// 	fmt.Fprintf(os.Stderr, "Got embeddings for input %d\n", *embed.Index)
+	// }
 
 }

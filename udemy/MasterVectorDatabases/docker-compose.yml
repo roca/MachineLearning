@@ -2,6 +2,7 @@ version: '3.5'
 
 services:
   python:
+    privileged: true
     container_name: python
     image: tensorflow/tensorflow:latest-jupyter
     environment:
@@ -10,7 +11,7 @@ services:
       - ALLOW_RESET=${ALLOW_RESET}
       - AZURE_CLIENT_ID=${AZURE_CLIENT_ID}
       - AZURE_TENANT_ID=${AZURE_TENANT_ID}
-      - AZURE_OPENAI_ENDPOINT=${AZURE_OPENAI_ENDPOINT}
+      - AZURE_ENDPOINT=${AZURE_ENDPOINT}
       - AZURE_APPLICATION_SCOPE=${AZURE_APPLICATION_SCOPE}
       - SVC_ACCOUNT=${SVC_ACCOUNT}
       - SVC_PASSWORD=${SVC_PASSWORD}
