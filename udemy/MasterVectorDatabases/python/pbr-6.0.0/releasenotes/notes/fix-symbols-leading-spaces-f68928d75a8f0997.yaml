@@ -1,5 +1,0 @@
----
-fixes:
-  - |
-    Fix an issue where symbols that were indented
-    would produce an incorrect version.

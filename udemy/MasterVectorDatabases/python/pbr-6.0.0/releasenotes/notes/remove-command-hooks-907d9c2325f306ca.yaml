@@ -1,6 +1,0 @@
----
-upgrade:
-  - |
-    Support for entry point command hooks has been removed. This feature was
-    poorly tested, poorly documented, and broken in some environments.
-    Support for global hooks is not affected.

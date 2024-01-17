@@ -1,5 +1,0 @@
----
-features:
-  - |
-    Support version parsing of git tag with the ``v<semver>`` pattern
-    (or ``V<semver>``), in addition to ``<semver>``.
