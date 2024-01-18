@@ -12,6 +12,7 @@ services:
       - AZURE_CLIENT_ID=${AZURE_CLIENT_ID}
       - AZURE_TENANT_ID=${AZURE_TENANT_ID}
       - AZURE_ENDPOINT=${AZURE_ENDPOINT}
+      - AZURE_OPENAI_ENDPOINT=${AZURE_OPENAI_ENDPOINT}
       - AZURE_APPLICATION_SCOPE=${AZURE_APPLICATION_SCOPE}
       - SVC_ACCOUNT=${SVC_ACCOUNT}
       - SVC_PASSWORD=${SVC_PASSWORD}
@@ -22,14 +23,16 @@ services:
       - "8888:8888"
     networks:
         - net
+        - default
     volumes:
       - ./python:/tf
     working_dir: /tf
     depends_on:
-      - "chroma"
-    #   - "etcd"
-    #   - "minio"
-    #   - "standalone"
+      # - "chroma"
+      # - "etcd"
+      # - "minio"
+      - standalone
+      # - attu
   chroma:
     image: ghcr.io/chroma-core/chroma:latest
     environment:

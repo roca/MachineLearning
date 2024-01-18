@@ -57,16 +57,21 @@ func azure() {
 	if err != nil {
 		log.Fatalf("Calling New Error: %s", err)
 	}
-	accounts, _ := publicClientApp.Accounts(context.Background())
-	fmt.Println("publicClientApp: ", accounts)
-
 	// cred, _ := confidential.NewCredFromSecret(password)
 	// confidentialClientApp, _ := confidential.New("", clientID, cred)
-	// acc, _ := confidentialClientApp.Account(context.Background(), clientID)
-	// fmt.Printf("confidentialClientApp: %v\n", acc.Name)
 
 	scopes := []string{os.Getenv("AZURE_APPLICATION_SCOPE")}
 
+	// url, err := publicClientApp.AuthCodeURL(context.Background(), clientID, "http://localhost", scopes)
+	// if err != nil {
+	// 	log.Fatalf("Calling AuthCodeURL Error: %s", err)
+	// }
+	// fmt.Println("Code URL:", url)
+
+	// authResult, err := publicClientApp.AcquireTokenInteractive(context.Background(), scopes)
+	// if err != nil {
+	// 	log.Fatalf("Calling AcquireTokenInteractive Error: %s", err)
+	// }
 	authResult, err := publicClientApp.AcquireTokenByUsernamePassword(context.Background(), scopes, username, password)
 	if err != nil {
 		log.Fatalf("Calling AcquireTokenByUsernamePassword Error: %s", err)
