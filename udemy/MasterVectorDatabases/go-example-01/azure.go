@@ -4,12 +4,14 @@ import (
 	"context"
 	"fmt"
 	"log"
+	"net/http"
 	"os"
 
 	"github.com/Azure/azure-sdk-for-go/sdk/ai/azopenai"
 	"github.com/Azure/azure-sdk-for-go/sdk/azcore"
 	"github.com/Azure/azure-sdk-for-go/sdk/azcore/policy"
 	"github.com/Azure/azure-sdk-for-go/sdk/azidentity"
+	"github.com/AzureAD/microsoft-authentication-library-for-go/apps/public"
 )
 
 type MyTokenCredential struct{}
@@ -31,8 +33,21 @@ func azure() {
 	scope := os.Getenv("AZURE_APPLICATION_SCOPE")
 	//azureOpenAIEndpoint := os.Getenv("AZURE_OPENAI_ENDPOINT")
 
-	//tenant := fmt.Sprintf("https://login.microsoftonline.com/%s", tenantID)
+	tenant := fmt.Sprintf("https://login.microsoftonline.com/%s", tenantID)
 	scopes := []string{scope}
+
+	httpClient := &http.Client{}
+
+	clientApp, err := public.New(clientID, public.WithAuthority(tenant), public.WithHTTPClient(httpClient))
+	if err != nil {
+		log.Fatalln("Fatal error calling public.New: ", err)
+	}
+
+	acquire_tokens_result2, err := clientApp.AcquireTokenByUsernamePassword(context.Background(), scopes, username, password)
+	if err != nil {
+		log.Fatalln("Fatal error calling clientApp.AcquireTokenByUsernamePassword", err)
+	}
+	fmt.Println("TOKEN:", acquire_tokens_result2.AccessToken)
 
 	dac, err := azidentity.NewUsernamePasswordCredential(tenantID, clientID, username, password, nil)
 	if err != nil {
