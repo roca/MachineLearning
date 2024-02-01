@@ -4,17 +4,33 @@ import (
 	"context"
 	"fmt"
 	"go-example-03/milvus"
+	"go-example-03/mongo"
 	"go-example-03/proteins"
 	"log"
 	"os"
 	"slices"
 	"strings"
+
+	"github.com/joho/godotenv"
 )
 
+func init() {
+	err := godotenv.Load(".env")
+	if err != nil {
+		log.Fatal("Error loading .env file")
+	}
+}
+
 func main() {
+
 	defer milvus.CloseConnection(milvus.MilvusClient)
 	if milvus.MilvusClient == nil {
 		log.Fatal("MilvusClient is nil")
+	}
+
+	defer mongo.CloseConnection(mongo.MongoClient)
+	if mongo.MongoClient == nil {
+		log.Fatal("MongoClient is nil")
 	}
 
 	// List Collections
