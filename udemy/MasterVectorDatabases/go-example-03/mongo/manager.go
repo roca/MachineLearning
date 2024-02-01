@@ -62,6 +62,7 @@ func ConnectToMongo(ctx context.Context, ch chan string) {
 
 	MongoClient = client
 	ch <- "connected to Mongo"
+
 }
 
 func CloseConnection(mongoClient *mongo.Client) {
