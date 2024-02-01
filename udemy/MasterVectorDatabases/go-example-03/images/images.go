@@ -3,9 +3,9 @@ package images
 import (
 	"context"
 	"errors"
+	"go-example-03/milvus"
 	"math/rand"
 	"slices"
-	"go-example-03/collections"
 
 	"github.com/milvus-io/milvus-sdk-go/v2/entity"
 )
@@ -43,16 +43,16 @@ type Images struct {
 }
 
 func (i *Images) CreateCollection() error {
-	//defer collections.CloseConnection(collections.MilvusClient)
+	//defer milvus.CloseConnection(milvus.MilvusClient)
 	schema.CollectionName = i.CollectionName
 	i.Schema = schema
 
-	collectionNames, _ := collections.GetCollectionNames(context.Background(), collections.MilvusClient)
+	collectionNames, _ := milvus.GetCollectionNames(context.Background(), milvus.MilvusClient)
 	if slices.Contains(collectionNames, collectionName) {
 		return errors.New("Images collection already exists!")
 	}
 
-	err := collections.CreateCollection(context.Background(), collections.MilvusClient, i.Schema)
+	err := milvus.CreateCollection(context.Background(), milvus.MilvusClient, i.Schema)
 	if err != nil {
 		return err
 	}
@@ -60,7 +60,7 @@ func (i *Images) CreateCollection() error {
 }
 
 func (i *Images) CreateImages() (int, error) {
-	//defer collections.CloseConnection(collections.MilvusClient)
+	//defer milvus.CloseConnection(milvus.MilvusClient)
 	imageIDs := make([]int64, 0, 2000)
 	images := make([][]float32, 0, 2000)
 	for i := 0; i < 2000; i++ {
@@ -77,7 +77,7 @@ func (i *Images) CreateImages() (int, error) {
 	i.ImageIDs = imageIDs
 	i.Images = images
 
-	column, err := (*collections.MilvusClient).Insert(
+	column, err := (*milvus.MilvusClient).Insert(
 		context.Background(), // ctx
 		"images",             // CollectionName
 		"",                   // partitionName
@@ -93,8 +93,8 @@ func (i *Images) CreateImages() (int, error) {
 
 // Delete items base on a expression
 func (i *Images) DeleteBooks(expr string) error {
-	//defer collections.CloseConnection(collections.MilvusClient)
-	err := (*collections.MilvusClient).Delete(
+	//defer milvus.CloseConnection(milvus.MilvusClient)
+	err := (*milvus.MilvusClient).Delete(
 		context.Background(), // ctx
 		"images",             // CollectionName
 		"",                   // partitionName
@@ -112,7 +112,7 @@ func (i *Images) DeleteBooks(expr string) error {
 
 // build index on the book_intro field
 func (i *Images) BuildIndex() error {
-	//defer collections.CloseConnection(collections.MilvusClient)
+	//defer milvus.CloseConnection(milvus.MilvusClient)
 	idx, err := entity.NewIndexIvfFlat( // NewIndex func
 		entity.L2, // metricType
 		1024,      // ConstructParams
@@ -121,7 +121,7 @@ func (i *Images) BuildIndex() error {
 		return err
 	}
 
-	err = (*collections.MilvusClient).CreateIndex(
+	err = (*milvus.MilvusClient).CreateIndex(
 		context.Background(), // ctx
 		"images",             // CollectionName
 		"image",              // fieldName

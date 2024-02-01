@@ -3,7 +3,7 @@ package proteins
 import (
 	"context"
 	"errors"
-	"go-example-03/collections"
+	"go-example-03/milvus"
 	"time"
 
 	"slices"
@@ -71,27 +71,27 @@ type Proteins struct {
 }
 
 func (p *Proteins) CreateCollection() error {
-	//defer collections.CloseConnection(collections.MilvusClient)
+	//defer milvus.CloseConnection(milvus.MilvusClient)
 	schema.CollectionName = p.CollectionName
 	p.Schema = schema
 
-	collectionNames, _ := collections.GetCollectionNames(context.Background(), collections.MilvusClient)
+	collectionNames, _ := milvus.GetCollectionNames(context.Background(), milvus.MilvusClient)
 	if slices.Contains(collectionNames, collectionName) {
 		return errors.New("Proteins collection already exists!")
 	}
 
-	err := collections.CreateCollection(context.Background(), collections.MilvusClient, p.Schema)
+	err := milvus.CreateCollection(context.Background(), milvus.MilvusClient, p.Schema)
 	if err != nil {
 		return err
 	}
 
-	collections.CreatePartition(context.Background(), collections.MilvusClient, p.CollectionName, "Bioregistry")
+	milvus.CreatePartition(context.Background(), milvus.MilvusClient, p.CollectionName, "Bioregistry")
 	return nil
 }
 
 // Create  100 proteins from the Mongo database
 func (p *Proteins) CreateProteins() (int, error) {
-	//defer collections.CloseConnection(collections.MilvusClient)
+	//defer milvus.CloseConnection(milvus.MilvusClient)
 	proteinIDs := make([]int64, 0, 100)
 	names := make([]string, 0, 100)
 	charCounts := make([]int64, 0, 100)
@@ -112,7 +112,7 @@ func (p *Proteins) CreateProteins() (int, error) {
 	p.ProteinJson = proteinJson
 	p.ProteinVector = proteinVector
 
-	// column, err := (*collections.MilvusClient).Insert(
+	// column, err := (*milvus.MilvusClient).Insert(
 	// 	context.Background(), // ctx
 	// 	"proteins",           // CollectionName
 	// 	"",                   // partitionName
@@ -126,7 +126,7 @@ func (p *Proteins) CreateProteins() (int, error) {
 	// 	return -1, err
 	// }
 
-	_, err := (*collections.MilvusClient).ManualCompaction(context.Background(), collectionName, time.Second*30)
+	_, err := (*milvus.MilvusClient).ManualCompaction(context.Background(), collectionName, time.Second*30)
 	if err != nil {
 		return -1, err
 	}
@@ -137,11 +137,11 @@ func (p *Proteins) CreateProteins() (int, error) {
 
 // Delete items base on a expression
 func (p *Proteins) DeleteProteins(expr string) error {
-	//defer collections.CloseConnection(collections.MilvusClient)
-	err := (*collections.MilvusClient).Delete(
+	//defer milvus.CloseConnection(milvus.MilvusClient)
+	err := (*milvus.MilvusClient).Delete(
 		context.Background(), // ctx
 		"proteins",           // CollectionName
-		"Bioregistry",                   // partitionName
+		"Bioregistry",        // partitionName
 		expr,                 // expr
 	)
 	if err != nil {
@@ -156,7 +156,7 @@ func (p *Proteins) DeleteProteins(expr string) error {
 
 // build index on the book_intro field
 func (p *Proteins) BuildIndex() error {
-	//defer collections.CloseConnection(collections.MilvusClient)
+	//defer milvus.CloseConnection(milvus.MilvusClient)
 	idx, err := entity.NewIndexIvfFlat( // NewIndex func
 		entity.L2, // metricType
 		1024,      // ConstructParams
@@ -165,7 +165,7 @@ func (p *Proteins) BuildIndex() error {
 		return err
 	}
 
-	err = (*collections.MilvusClient).CreateIndex(
+	err = (*milvus.MilvusClient).CreateIndex(
 		context.Background(), // ctx
 		"proteins",           // CollectionName
 		"protein_vector",     // fieldName

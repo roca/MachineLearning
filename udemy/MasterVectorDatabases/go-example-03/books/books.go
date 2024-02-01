@@ -3,7 +3,7 @@ package books
 import (
 	"context"
 	"errors"
-	"go-example-03/collections"
+	"go-example-03/milvus"
 	"math/rand"
 
 	"slices"
@@ -50,16 +50,16 @@ type Books struct {
 }
 
 func (b *Books) CreateCollection() error {
-	//defer collections.CloseConnection(collections.MilvusClient)
+	//defer milvus.CloseConnection(milvus.MilvusClient)
 	schema.CollectionName = b.CollectionName
 	b.Schema = schema
 
-	collectionNames, _ := collections.GetCollectionNames(context.Background(), collections.MilvusClient)
+	collectionNames, _ := milvus.GetCollectionNames(context.Background(), milvus.MilvusClient)
 	if slices.Contains(collectionNames, collectionName) {
 		return errors.New("Books collection already exists!")
 	}
 
-	err := collections.CreateCollection(context.Background(), collections.MilvusClient, b.Schema)
+	err := milvus.CreateCollection(context.Background(), milvus.MilvusClient, b.Schema)
 	if err != nil {
 		return err
 	}
@@ -68,7 +68,7 @@ func (b *Books) CreateCollection() error {
 
 // Create 2000 random books
 func (b *Books) CreateBooks() (int, error) {
-	//defer collections.CloseConnection(collections.MilvusClient)
+	//defer milvus.CloseConnection(milvus.MilvusClient)
 	bookIDs := make([]int64, 0, 2000)
 	wordCounts := make([]int64, 0, 2000)
 	bookIntros := make([][]float32, 0, 2000)
@@ -89,7 +89,7 @@ func (b *Books) CreateBooks() (int, error) {
 	b.WordCounts = wordCounts
 	b.BookIntros = bookIntros
 
-	column, err := (*collections.MilvusClient).Insert(
+	column, err := (*milvus.MilvusClient).Insert(
 		context.Background(), // ctx
 		"books",              // CollectionName
 		"",                   // partitionName
@@ -106,8 +106,8 @@ func (b *Books) CreateBooks() (int, error) {
 
 // Delete items base on a expression
 func (b *Books) DeleteBooks(expr string) error {
-	//defer collections.CloseConnection(collections.MilvusClient)
-	err := (*collections.MilvusClient).Delete(
+	//defer milvus.CloseConnection(milvus.MilvusClient)
+	err := (*milvus.MilvusClient).Delete(
 		context.Background(), // ctx
 		"books",              // CollectionName
 		"",                   // partitionName
@@ -125,7 +125,7 @@ func (b *Books) DeleteBooks(expr string) error {
 
 // build index on the book_intro field
 func (b *Books) BuildIndex() error {
-	//defer collections.CloseConnection(collections.MilvusClient)
+	//defer milvus.CloseConnection(milvus.MilvusClient)
 	idx, err := entity.NewIndexIvfFlat( // NewIndex func
 		entity.L2, // metricType
 		1024,      // ConstructParams
@@ -134,7 +134,7 @@ func (b *Books) BuildIndex() error {
 		return err
 	}
 
-	err = (*collections.MilvusClient).CreateIndex(
+	err = (*milvus.MilvusClient).CreateIndex(
 		context.Background(), // ctx
 		"books",              // CollectionName
 		"book_intro",         // fieldName

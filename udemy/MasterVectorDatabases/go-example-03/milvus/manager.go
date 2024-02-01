@@ -1,4 +1,4 @@
-package collections
+package milvus
 
 import (
 	"context"
@@ -11,6 +11,7 @@ import (
 )
 
 var MilvusClient *client.Client
+var defaultDatabase = "bioregistry"
 
 func init() {
 
@@ -21,7 +22,7 @@ func init() {
 	defer cancel()
 
 	// Start the ConnectToMilvus function
-	go ConnectToMilvus(ctxTimeout, ch)
+	go ConnectToMilvus(ctxTimeout, ch, defaultDatabase)
 
 	select {
 	case <-ctxTimeout.Done():
@@ -32,7 +33,7 @@ func init() {
 
 }
 
-func ConnectToMilvus(ctx context.Context, ch chan string) {
+func ConnectToMilvus(ctx context.Context, ch chan string, database string) {
 	// NewGrpcClient
 	milvusClient, err := client.NewGrpcClient(
 		ctx,               // ctx
@@ -42,7 +43,7 @@ func ConnectToMilvus(ctx context.Context, ch chan string) {
 		ch <- fmt.Sprint("failed to connect to Milvus:", err.Error())
 	}
 
-	milvusClient.UsingDatabase(ctx, "bioregistry")
+	milvusClient.UsingDatabase(ctx, database)
 
 	MilvusClient = &milvusClient
 	ch <- "connected to Milvus"
