@@ -14,6 +14,10 @@ import (
 
 var MongoClient *mongo.Client
 
+type Protein struct {
+	REGNNAME string `bson:"regn_name"`
+}
+
 func init() {
 
 	err := godotenv.Load(".env")

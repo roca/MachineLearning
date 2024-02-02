@@ -3,13 +3,19 @@ package proteins
 import (
 	"context"
 	"errors"
+	"fmt"
 	"go-example-03/milvus"
+	mg "go-example-03/mongo"
+	"log"
+	"os"
 	"time"
 
 	"slices"
 
 	"github.com/milvus-io/milvus-sdk-go/v2/client"
 	"github.com/milvus-io/milvus-sdk-go/v2/entity"
+	"go.mongodb.org/mongo-driver/mongo"
+	"gopkg.in/mgo.v2/bson"
 )
 
 var (
@@ -61,13 +67,14 @@ var schema = &entity.Schema{
 }
 
 type Proteins struct {
-	Schema         *entity.Schema
-	CollectionName string
-	ProteinIDs     []int64
-	Names          []string
-	CharCounts     []int64
-	ProteinJson    [][]byte
-	ProteinVector  [][]float32
+	Schema          *entity.Schema
+	CollectionName  string
+	ProteinIDs      []int64
+	Names           []string
+	CharCounts      []int64
+	ProteinJson     [][]byte
+	ProteinVector   [][]float32
+	MongoDbProteins *mongo.Cursor
 }
 
 func (p *Proteins) CreateCollection() error {
@@ -99,6 +106,11 @@ func (p *Proteins) CreateProteins() (int, error) {
 	proteinVector := make([][]float32, 0, 100)
 
 	// TODO: Get 100 proteins from the Mongo database
+	proteinCount, err := p.GetProteins()
+	if err != nil {
+		return -1, err
+	}
+	fmt.Println("Protein count:", proteinCount)
 
 	// proteinIDsColumn := entity.NewColumnInt64("protein_id", proteinIDs)
 	// namesColumn := entity.NewColumnVarChar("name", names)
@@ -126,7 +138,7 @@ func (p *Proteins) CreateProteins() (int, error) {
 	// 	return -1, err
 	// }
 
-	_, err := (*milvus.MilvusClient).ManualCompaction(context.Background(), collectionName, time.Second*30)
+	_, err = (*milvus.MilvusClient).ManualCompaction(context.Background(), collectionName, time.Second*30)
 	if err != nil {
 		return -1, err
 	}
@@ -178,5 +190,30 @@ func (p *Proteins) BuildIndex() error {
 	}
 
 	return nil
+
+}
+
+// Get 100 proteins from the Mongo database
+func (p *Proteins) GetProteins() (int64, error) {
+
+	db := os.Getenv("MONGOID_DATABASE")
+
+	coll := mg.MongoClient.Database(db).Collection("proteins")
+
+	// { "$and" : [ { "descriptive_name" : { "$ne" : None } }, { "descriptive_name" : { "$exists" : "true" } } ] }
+	andFilter := bson.M{
+		"$and": []bson.M{ // you can try this in []interface
+			bson.M{"descriptive_name": bson.M{"$ne": "None"}},
+			bson.M{"descriptive_name": bson.M{"$exists": "true"}},
+		},
+	}
+	_ = andFilter
+
+	count, err := coll.CountDocuments(context.TODO(), andFilter)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	return count, nil
 
 }
