@@ -118,3 +118,11 @@ services:
       - "8000:3000"
     depends_on:
       - "standalone"
+
+  qdrant:
+    container_name: qdrant
+    image: qdrant/qdrant:latest
+    environment:
+      - ALLOW_RESET=TRUE
+    ports:
+      - "6333:6333"
