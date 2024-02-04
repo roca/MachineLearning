@@ -29,6 +29,7 @@ services:
       - BIOREGISTRY_USER=${BIOREGISTRY_USER}
       - BIOREGISTRY_PASSWORD=${BIOREGISTRY_PASSWORD}
       - HUGGINGFACE_API_KEY=${HUGGINGFACE_API_KEY}
+      - QDRANT_HOST=${QDRANT_HOST}
     ports:
       - "8888:8888"
     volumes:
@@ -39,7 +40,8 @@ services:
       # - "etcd"
       # - "minio"
       # - standalone
-      - attu
+      # - attu
+      - qdrant
 
   chroma:
     image: ghcr.io/chroma-core/chroma:latest
