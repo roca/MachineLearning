@@ -128,3 +128,4 @@ services:
       - ALLOW_RESET=TRUE
     ports:
       - "6333:6333"
+      - "6334:6334"
