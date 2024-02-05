@@ -40,8 +40,8 @@ services:
       # - "etcd"
       # - "minio"
       # - standalone
-      # - attu
-      - qdrant
+      - attu
+      # - qdrant
 
   chroma:
     image: ghcr.io/chroma-core/chroma:latest
