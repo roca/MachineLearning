@@ -41,9 +41,9 @@ services:
       # - "minio"
       # - standalone
       # - attu
-      - attu
-      - mariadb
-      # - qdrant
+      # - attu
+      # - mariadb
+      - qdrant
 
   chroma:
     image: ghcr.io/chroma-core/chroma:latest
