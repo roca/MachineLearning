@@ -1,5 +1,6 @@
-pymilvus==2.0.1
-sklearn
+#pymilvus==2.0.1
+pymilvus
+scikit-learn
 pymysql
 numpy
 pickle-mixin
