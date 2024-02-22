@@ -1,12 +1,19 @@
 package main
 
 import (
+	"log"
+
+	"github.com/joho/godotenv"
 	openai "github.com/sashabaranov/go-openai"
 )
 
 var client *openai.Client
 
 func init() {
+	err := godotenv.Load(".env")
+	if err != nil {
+		log.Fatal("Error loading .env file")
+	}
 	azure()
 	//client = openai.NewClient(os.Getenv("OPEN_API_KEY"))
 	// config = openai.DefaultConfig(os.Getenv("OPEN_API_KEY"))
