@@ -6,4 +6,5 @@ use (
 	./go-example-01
 	./go-example-02
 	./go-example-03
+	./go-example-04
 )

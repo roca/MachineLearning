@@ -1,0 +1,21 @@
+# github.com/Masterminds/semver v1.5.0
+## explicit
+github.com/Masterminds/semver
+# github.com/amikos-tech/chroma-go v0.1.4
+## explicit; go 1.21
+github.com/amikos-tech/chroma-go
+github.com/amikos-tech/chroma-go/collection
+github.com/amikos-tech/chroma-go/metadata
+github.com/amikos-tech/chroma-go/swagger
+github.com/amikos-tech/chroma-go/types
+github.com/amikos-tech/chroma-go/where
+github.com/amikos-tech/chroma-go/where_document
+# github.com/google/uuid v1.6.0
+## explicit
+github.com/google/uuid
+# github.com/joho/godotenv v1.5.1
+## explicit; go 1.12
+github.com/joho/godotenv
+# github.com/oklog/ulid v1.3.1
+## explicit
+github.com/oklog/ulid

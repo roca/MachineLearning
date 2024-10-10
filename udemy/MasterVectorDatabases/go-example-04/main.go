@@ -4,10 +4,9 @@ import (
 	"context"
 	"fmt"
 	"log"
-	"os"
 
 	chroma "github.com/amikos-tech/chroma-go"
-	"github.com/amikos-tech/chroma-go/types"
+	types "github.com/amikos-tech/chroma-go/types"
 	"github.com/joho/godotenv"
 )
 
@@ -27,60 +26,81 @@ func (e *OllamaEmbeddingFunction) EmbedRecords(ctx context.Context, records []*t
 	return nil
 }
 
-func main() {
-	client, err := chroma.NewClient("http://localhost:8000")
-	if err != nil {
-		log.Fatalf("Error creating client: %s \n", err.Error())
-	}
+var myEnv map[string]string
 
-	collectionName := "test-collection"
-	metadata := map[string]interface{}{}
-	ctx := context.Background()
-	err = godotenv.Load(".env")
+func init() {
+	err := godotenv.Load(".env")
 	if err != nil {
 		fmt.Printf("Error loading .env file: %s", err)
 		return
 	}
-	apiKey := os.Getenv("OPENAI_API_KEY")
-	fmt.Println("openaiApiKey: ", apiKey)
 
-	embeddingFunction, _ := NewOllamaEmbeddingFunction() //create a new Ollama Embedding function
-	distanceFunction := types.L2
-	_, errRest := client.Reset(ctx) //reset the database
-	if errRest != nil {
-		log.Fatalf("Error resetting database: %s \n", errRest.Error())
+	myEnv, _ = godotenv.Read()
+	fmt.Println("chomaDBToken: ", myEnv["CHROMADB_TOKEN"])
+
+}
+
+func main() {
+	chomaDBToken := myEnv["CHROMADB_TOKEN"]
+
+	clientOptions := []chroma.ClientOption{
+		chroma.WithTenant(types.DefaultTenant),
+		chroma.WithDatabase(types.DefaultDatabase),
+		chroma.WithAuth(types.NewTokenAuthCredentialsProvider(chomaDBToken, types.AuthorizationTokenHeader)),
+		chroma.WithAuth(types.NewTokenAuthCredentialsProvider(chomaDBToken, types.XChromaTokenHeader)),
 	}
-	col, err := client.CreateCollection(ctx, collectionName, metadata, true, embeddingFunction, distanceFunction)
+
+	client, err := chroma.NewClient("https://chromadb.eksdev.aws.regeneron.com", clientOptions...)
 	if err != nil {
-		fmt.Printf("Error create collection: %s \n", err.Error())
-		return
+		log.Fatalf("Error creating client: %s \n", err.Error())
 	}
-	//fmt.Println("col: ", col)
-	documents := []string{
-		"This is a document about cats. Cats are great.",
-		"this is a document about dogs. Dogs are great.",
-	}
-	ids := []string{
-		"ID1",
-		"ID2",
-	}
+	_ = client
 
-	metadatas := []map[string]interface{}{
-		{"key1": "value1"},
-		{"key2": "value2"},
-	}
-	_, addError := col.Add(ctx, nil, metadatas, documents, ids)
-	if addError != nil {
-		log.Fatalf("Error adding documents: %s \n", addError)
-	}
-	countDocs, qrerr := col.Count(ctx)
-	if qrerr != nil {
-		log.Fatalf("Error counting documents: %s \n", qrerr)
-	}
-	fmt.Printf("countDocs: %v\n", countDocs) //this should result in 2
-	qr, qrerr := col.Query(ctx, []string{"I love dogs"}, 5, nil, nil, nil)
-	if qrerr != nil {
-		log.Fatalf("Error querying documents: %s \n", qrerr)
-	}
-	fmt.Printf("qr: %v\n", qr.Documents[0][0]) //this should result in the document about dogs
+	collectioCount,_ := client.CountCollections(context.Background())
+
+	fmt.Println("CollectioCount:",collectioCount)
+
+	// collectionName := "test-collection"
+	// metadata := map[string]interface{}{}
+	// ctx := context.Background()
+
+	// embeddingFunction, _ := NewOllamaEmbeddingFunction() //create a new Ollama Embedding function
+	// distanceFunction := types.L2
+	// _, errRest := client.Reset(ctx) //reset the database
+	// if errRest != nil {
+	// 	log.Fatalf("Error resetting database: %s \n", errRest.Error())
+	// }
+	// col, err := client.CreateCollection(ctx, collectionName, metadata, true, embeddingFunction, distanceFunction)
+	// if err != nil {
+	// 	fmt.Printf("Error create collection: %s \n", err.Error())
+	// 	return
+	// }
+	// //fmt.Println("col: ", col)
+	// documents := []string{
+	// 	"This is a document about cats. Cats are great.",
+	// 	"this is a document about dogs. Dogs are great.",
+	// }
+	// ids := []string{
+	// 	"ID1",
+	// 	"ID2",
+	// }
+
+	// metadatas := []map[string]interface{}{
+	// 	{"key1": "value1"},
+	// 	{"key2": "value2"},
+	// }
+	// _, addError := col.Add(ctx, nil, metadatas, documents, ids)
+	// if addError != nil {
+	// 	log.Fatalf("Error adding documents: %s \n", addError)
+	// }
+	// countDocs, qrerr := col.Count(ctx)
+	// if qrerr != nil {
+	// 	log.Fatalf("Error counting documents: %s \n", qrerr)
+	// }
+	// fmt.Printf("countDocs: %v\n", countDocs) //this should result in 2
+	// qr, qrerr := col.Query(ctx, []string{"I love dogs"}, 5, nil, nil, nil)
+	// if qrerr != nil {
+	// 	log.Fatalf("Error querying documents: %s \n", qrerr)
+	// }
+	// fmt.Printf("qr: %v\n", qr.Documents[0][0]) //this should result in the document about dogs
 }
