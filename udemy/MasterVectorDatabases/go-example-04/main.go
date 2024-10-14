@@ -170,20 +170,28 @@ func main() {
 
 	fmt.Println("col: ", col)
 	documents := []string{
-		"This is a document about cats. Cats are great.",
-		"this is a document about dogs. Dogs are great.",
+		"The Matrix is everywhere. It is all around us.",
+		"Unfortunately, no one can be told what the Matrix is.",
+		"You can see it when you look out your window or when you turn on your television.",
+		"Like everyone else you were born into bondage. Into a prison that you cannot taste or see or touch. A prison for your mind.",
+		"It is the world that has been pulled over your eyes to blind you from the truth.",
+		"Human beings are a disease, a cancer of this planet. You're a plague and we are the cure.",
+		"Look out that window. You've had your time. The future is our world, Morpheus. The future is our time.",
 	}
 
-	id1 := uuid.UUID.String(uuid.New())
-	id2 := uuid.UUID.String(uuid.New())
-	ids := []string{
-		id1,
-		id2,
+	ids := make([]string, len(documents))
+	for i, _ := range documents {
+		ids[i] = uuid.UUID.String(uuid.New())
 	}
 
 	metadatas := []map[string]interface{}{
-		{"key1": "value1"},
-		{"key2": "value2"},
+		{"category": "quote", "speaker": "Morpheus"},
+		{"category": "quote", "speaker": "Morpheus"},
+		{"category": "quote", "speaker": "Morpheus"},
+		{"category": "quote", "speaker": "Morpheus"},
+		{"category": "quote", "speaker": "Morpheus"},
+		{"category": "quote", "speaker": "Agent Smith"},
+		{"category": "quote", "speaker": "Agent Smith"},
 	}
 
 	// records := []*types.Record{
@@ -210,7 +218,10 @@ func main() {
 	}
 
 	fmt.Printf("countDocs: %v\n", countDocs) //this should result in 2
-	qr, qrerr := col.Query(ctx, []string{"I love dogs"}, 5, nil, nil, nil)
+	where :=  make(map[string]interface{})
+	where["speaker"] = "Morpheus"
+
+	qr, qrerr := col.Query(ctx, []string{"Am I in a prison"}, 5,where, nil, nil)
 	if qrerr != nil {
 		log.Fatalf("Error querying documents: %s \n", qrerr)
 	}
