@@ -218,10 +218,10 @@ func main() {
 	}
 
 	fmt.Printf("countDocs: %v\n", countDocs) //this should result in 2
-	where :=  make(map[string]interface{})
+	where := make(map[string]interface{})
 	where["speaker"] = "Morpheus"
 
-	qr, qrerr := col.Query(ctx, []string{"Am I in a prison"}, 5,where, nil, nil)
+	qr, qrerr := col.Query(ctx, []string{"Am I in a prison"}, 5, where, nil, nil)
 	if qrerr != nil {
 		log.Fatalf("Error querying documents: %s \n", qrerr)
 	}
