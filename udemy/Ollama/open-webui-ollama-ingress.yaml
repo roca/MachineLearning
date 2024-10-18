@@ -1,0 +1,28 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    regeneron.com/manage-tls: "yes"
+  labels:
+    dev.okteto.com/deployed-by: app-dev-romel-campbell
+  name: open-webui-ollama-ingress
+  namespace: app-dev-romel-campbell
+spec:
+  rules:
+  - host: open-webui-ollama.eksdev.aws.regeneron.com
+    http:
+      paths:
+      - backend:
+          service:
+            name: open-webui-ollama
+            port:
+              number: 11434
+        path: /
+        pathType: ImplementationSpecific
+  tls:
+  - hosts:
+    - open-webui-ollama.eksdev.aws.regeneron.com
+    secretName: cluster-ingress-tls
