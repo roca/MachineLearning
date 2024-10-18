@@ -1,4 +1,8 @@
-# [Udemy course: https://www.udemy.com/course/mastering-ollama-a-comprehensive-guide](https://www.udemy.com/course/mastering-ollama-a-comprehensive-guide)
+# Course notes
+
+## [Udemy course 1: https://www.udemy.com/course/mastering-ollama-a-comprehensive-guide](https://www.udemy.com/course/mastering-ollama-a-comprehensive-guide)
+
+## [Udemy course 2: https://www.udemy.com/course/mastering-ollama-a-comprehensive-guide](https://www.udemy.com/course/ollama-starttech)
 
 ## ChromaDB Helm chart
 
@@ -18,10 +22,7 @@ kubectl port-forward svc/chroma-chromadb 8000:8000
 docker run -p 3001:3000 fengzhichao/chromadb-admin
 ```
 
-NOTE: Use http://host.docker.internal:8000 for the connection string if you want to connect to a ChromaDB instance running locally.
-
-
-
+- NOTE: Use http://host.docker.internal:8000 for the connection string if you want to connect to a ChromaDB instance running locally.
 
 ## Golang client
 
