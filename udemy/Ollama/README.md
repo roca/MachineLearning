@@ -27,3 +27,18 @@ docker run -p 3001:3000 fengzhichao/chromadb-admin
 ## Golang client
 
 - https://cookbook.chromadb.dev/core/clients/#http-client
+
+
+## Ollama commands
+
+- Exiting
+
+```bash
+/bye
+```
+
+- Verboes mode
+
+```bash
+/set verbose
+```

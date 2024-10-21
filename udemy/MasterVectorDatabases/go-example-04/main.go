@@ -57,7 +57,7 @@ func (e *OllamaEmbeddingFunction) embedText(ctx context.Context, document string
 		Model  string `json:"model"`
 		Prompt string `json:"prompt"`
 	}{
-		Model:  "mxbai-embed-large",
+		Model:  "mxbai-embed-large:latest",
 		Prompt: document,
 	}
 	jsonData, _ := json.Marshal(data)
