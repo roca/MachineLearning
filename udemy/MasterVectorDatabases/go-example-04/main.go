@@ -1,12 +1,14 @@
 package main
 
 import (
+	"bufio"
 	"bytes"
 	"context"
 	"encoding/json"
 	"fmt"
 	"log"
 	"net/http"
+	"os"
 
 	chroma "github.com/amikos-tech/chroma-go"
 	types "github.com/amikos-tech/chroma-go/types"
@@ -221,12 +223,27 @@ func main() {
 	where := make(map[string]interface{})
 	where["speaker"] = "Morpheus"
 
-	qr, qrerr := col.Query(ctx, []string{"Am I in a prison"}, 5, where, nil, nil)
-	if qrerr != nil {
-		log.Fatalf("Error querying documents: %s \n", qrerr)
+	scanner := bufio.NewScanner(os.Stdin)
+	for {
+		fmt.Print("Question: ")
+		// reads user input until \n by default
+		scanner.Scan()
+		// Holds the string that was scanned
+		text := scanner.Text()
+		if len(text) != 0 {
+			qr, qrerr := col.Query(ctx, []string{text}, 5, where, nil, nil)
+			if qrerr != nil {
+				log.Fatalf("Error querying documents: %s \n", qrerr)
+			}
+			fmt.Printf("Morpheus: %v\n", qr.Documents[0][0]) //this should result in the document about dogs
+		} else {
+			// exit if user entered an empty string
+			break
+		}
 	}
+}
 
-	fmt.Printf("qr: %v\n", qr.Documents[0][0]) //this should result in the document about dogs
+func runQuery(ctx context.Context, inputText string) {
 
 }
 
