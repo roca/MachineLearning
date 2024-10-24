@@ -42,3 +42,10 @@ docker run -p 3001:3000 fengzhichao/chromadb-admin
 ```bash
 /set verbose
 ```
+
+- Set/Save system parameters
+
+```bash
+/set system "You are Jarvis from Iron-man and the user is the iron man. respond in 2 lines only."
+/save jarvisai
+```
