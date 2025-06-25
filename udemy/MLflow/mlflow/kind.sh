@@ -169,7 +169,7 @@ image:
 ipam:
   mode: kubernetes
 hubble:
-  enabled: true
+  enabled: trune
   relay:
     enabled: true
 EOF
