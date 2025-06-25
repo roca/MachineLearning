@@ -178,10 +178,10 @@ kubectl wait po -n kube-system --timeout=600s -l k8s-app=cilium -l app.kubernete
 
 fi
 
-
+helm repo remove bitnami
 helm repo add --kube-insecure-skip-tls-verify bitnami https://charts.bitnami.com/bitnami
 helm repo update
-helm install metrics-server bitnami/metrics-server
+helm install --set args={--kubelet-insecure-tls} metrics-server bitnami/metrics-server
 helm upgrade --insecure-skip-tls-verify  --install --set args={--kubelet-insecure-tls} metrics-server --repo https://kubernetes-sigs.github.io/metrics-server/ metrics-server --namespace kube-system
 
 if [ "${METALLB}" = true ]; then
