@@ -133,9 +133,6 @@ nodes:
 ${NODE_CONFIG}
 EOF
 
- # kubectl config set clusters.kind-kind.insecure-skip-tls-verify true
- # Kubernetes cluster unreachable: specifying a root certificates file with the insecure flag is not allowed
-
 # Preload images if PRELOAD is true
 if [ "${PRELOAD}" = true ]; then
     echo "Pre-loading images..."
@@ -169,7 +166,7 @@ image:
 ipam:
   mode: kubernetes
 hubble:
-  enabled: trune
+  enabled: true
   relay:
     enabled: true
 EOF
@@ -178,15 +175,15 @@ kubectl wait po -n kube-system --timeout=600s -l k8s-app=cilium -l app.kubernete
 
 fi
 
-helm repo add bitnami https://charts.bitnami.com/bitnami --cert-file /etc/ssl/rds-combined-ca-bundle.pem
-helm repo update --kube-ca-file /etc/ssl/rds-combined-ca-bundle.pem
-helm install metrics-server bitnami/metrics-server --cert-file /etc/ssl/rds-combined-ca-bundle.pem
-helm upgrade --install --set args={--kubelet-insecure-tls} metrics-server --repo https://kubernetes-sigs.github.io/metrics-server/ metrics-server --namespace kube-system --cert-file /etc/ssl/rds-combined-ca-bundle.pem
+
+helm repo add bitnami https://charts.bitnami.com/bitnami
+helm repo update
+helm install metrics-server bitnami/metrics-server
+helm upgrade --install --set args={--kubelet-insecure-tls} metrics-server --repo https://kubernetes-sigs.github.io/metrics-server/ metrics-server --namespace kube-system
 
 if [ "${METALLB}" = true ]; then
 # MetalLB, modified for podman. Needs https://github.com/jasonmadigan/podman-mac-net-connect
-helm upgrade --install --namespace metallb-system --create-namespace --repo https://metallb.github.io/metallb metallb metallb --cert-file /etc/ssl/rds-combined-ca-bundle.pem
-
+helm upgrade --install --namespace metallb-system --create-namespace --repo https://metallb.github.io/metallb metallb metallb
 
 kubectl wait po -n metallb-system --timeout=600s -l app.kubernetes.io/name=metallb -l app.kubernetes.io/component=controller --for condition=Ready
 sleep 5
