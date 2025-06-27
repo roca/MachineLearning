@@ -25,13 +25,3 @@ curl -s "https://raw.githubusercontent.com/kserve/kserve/release-0.15/hack/quick
 helm repo add kubernetes-dashboard https://kubernetes.github.io/dashboard/
 helm upgrade --install kubernetes-dashboard kubernetes-dashboard/kubernetes-dashboard --create-namespace --namespace kubernetes-dashboard
  ```
-
-
- ## [Deploying Models to Kubernetes with AIStor, MLflow and KServe: ](https://blog.min.io/deploying-models-to-kubernetes-with-aistor-mlflow-and-kserve/)
-
- ```bash
-kind create cluster
-kubectl config use-context kind-kind
-kubectl create namespace mlflow-kserve-test
-```
-
