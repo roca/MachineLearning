@@ -1,7 +1,6 @@
-version: '3.5'
+version: "3.5"
 
 services:
-
   python:
     privileged: true
     container_name: python
@@ -117,7 +116,7 @@ services:
     container_name: attu
     image: zilliz/attu:v2.3.1
     environment:
-      MILVUS_URL: 127.0.0.1:19530
+      MILVUS_URL: standalone
     ports:
       - "8000:3000"
     depends_on:
@@ -143,4 +142,3 @@ services:
     ports:
       - "6333:6333"
       - "6334:6334"
-
