@@ -8,3 +8,5 @@
 - Create a new page at /test with an example card
 
 - ui.md ALL components in this app should use shadcn ui components. NO custom components should be created. If there is currently no suitable shadcn ui component installed in this app, check the shadcn ui registry for an appropriate component to install.
+
+- Create a landing page that highlights the features of this app, specifically a mortgage repayments calculator and a compound interest calculator.
