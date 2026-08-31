@@ -128,7 +128,11 @@ export default function Home() {
               spreadsheet headaches.
             </p>
             <div className="flex flex-wrap items-center justify-center gap-3">
-              <Button size="lg">
+              <Button
+                size="lg"
+                nativeButton={false}
+                render={<a href="/mortgage-repayments-calculator" />}
+              >
                 Try the calculators
                 <ArrowRight data-icon="inline-end" />
               </Button>
@@ -204,7 +208,14 @@ export default function Home() {
                   </ul>
                 </CardContent>
                 <CardFooter>
-                  <Button variant="outline" className="w-full">
+                  <Button
+                    variant="outline"
+                    className="w-full"
+                    nativeButton={false}
+                    render={
+                      <a href="/mortgage-repayments-calculator" />
+                    }
+                  >
                     {feature.cta}
                     <ArrowRight data-icon="inline-end" />
                   </Button>
@@ -259,7 +270,11 @@ export default function Home() {
               </CardDescription>
             </CardHeader>
             <CardFooter className="border-0 bg-transparent">
-              <Button size="lg">
+              <Button
+                size="lg"
+                nativeButton={false}
+                render={<a href="/mortgage-repayments-calculator" />}
+              >
                 Launch FinCalc
                 <ArrowRight data-icon="inline-end" />
               </Button>
