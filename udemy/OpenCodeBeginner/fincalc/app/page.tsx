@@ -35,6 +35,7 @@ const calculatorFeatures = [
       "Loan term and rate comparisons",
     ],
     cta: "Estimate a mortgage",
+    href: "/mortgage-repayments-calculator",
   },
   {
     icon: TrendingUp,
@@ -48,6 +49,7 @@ const calculatorFeatures = [
       "Year-by-year growth timeline",
     ],
     cta: "Project your growth",
+    href: "/compound-interest-calculator",
   },
 ];
 
@@ -213,7 +215,7 @@ export default function Home() {
                     className="w-full"
                     nativeButton={false}
                     render={
-                      <a href="/mortgage-repayments-calculator" />
+                      <a href={feature.href} />
                     }
                   >
                     {feature.cta}

@@ -67,13 +67,15 @@ const chartConfig = {
 
 const currencyFormatter = new Intl.NumberFormat("en-GB", {
   style: "currency",
-  currency: "GBP",
+  currency: "USD",
+  currencyDisplay: "narrowSymbol",
   maximumFractionDigits: 0,
 })
 
 const currencyFormatterFull = new Intl.NumberFormat("en-GB", {
   style: "currency",
-  currency: "GBP",
+  currency: "USD",
+  currencyDisplay: "narrowSymbol",
   maximumFractionDigits: 2,
 })
 
@@ -256,7 +258,7 @@ export default function MortgageRepaymentsCalculator() {
                     <FieldLabel htmlFor="home-price">Home price</FieldLabel>
                     <div className="relative">
                       <span className="pointer-events-none absolute left-2.5 top-1/2 -translate-y-1/2 text-sm text-muted-foreground">
-                        £
+                        $
                       </span>
                       <Input
                         id="home-price"
@@ -274,7 +276,7 @@ export default function MortgageRepaymentsCalculator() {
                     <FieldLabel htmlFor="deposit">Deposit</FieldLabel>
                     <div className="relative">
                       <span className="pointer-events-none absolute left-2.5 top-1/2 -translate-y-1/2 text-sm text-muted-foreground">
-                        £
+                        $
                       </span>
                       <Input
                         id="deposit"
@@ -465,7 +467,7 @@ export default function MortgageRepaymentsCalculator() {
                         Expand a year to see each monthly payment. The schedule
                         lists every month, which principal is repaid, and the
                         balance remaining — for a repayment mortgage the balance
-                        reaches £0 at the end of the term.
+                        reaches $0 at the end of the term.
                       </p>
                       <Accordion
                         multiple
