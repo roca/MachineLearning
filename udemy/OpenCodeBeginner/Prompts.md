@@ -12,3 +12,5 @@
 - Create a landing page that highlights the features of this app, specifically a mortgage repayments calculator and a compound interest calculator.
 
 - We need a new page at /mortgage-repayments-calculator and we need to build a mortgage repayments calculator feature on this page
+
+- We need a new page at /compound-interest-calulator and we need to build a compound interest calculator feature on this page. Refer to the design on the @app/mortgage-repayments-calculator/page.tsx to ensure design consistency.
