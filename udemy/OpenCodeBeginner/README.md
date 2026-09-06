@@ -45,6 +45,7 @@ This course uses **[shadcn/ui](https://ui.shadcn.com/)** for building the user i
 ## Key Topics
 
 - MCP servers and tools
+- - [Documentation](https://github.com/github/github-mcp-server/blob/main/docs/installation-guides/install-opencode.md)
 - Custom agents & sub agents
 - Agent skills
 - Project rules
