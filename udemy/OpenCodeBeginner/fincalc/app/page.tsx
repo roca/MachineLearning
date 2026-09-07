@@ -70,8 +70,7 @@ const otherFeatures = [
   {
     icon: LineChart,
     title: "Scenario comparisons",
-    description:
-      "A/B test rates, terms, and contributions side by side.",
+    description: "A/B test rates, terms, and contributions side by side.",
   },
   {
     icon: Sparkles,
@@ -119,8 +118,8 @@ export default function Home() {
             </h1>
             <p className="max-w-2xl text-lg text-muted-foreground">
               FinCalc brings the two formulas people actually need into one
-              clean, fast tool — mortgage repayments and compound interest —
-              so you can plan a house, a loan, or your savings without the
+              clean, fast tool — mortgage repayments and compound interest — so
+              you can plan a house, a loan, or your savings without the
               spreadsheet headaches.
             </p>
             <div className="flex flex-wrap items-center justify-center gap-3">
@@ -161,7 +160,10 @@ export default function Home() {
         </section>
 
         {/* Calculator features */}
-        <section id="features" className="mx-auto max-w-6xl scroll-mt-20 px-6 pb-20">
+        <section
+          id="features"
+          className="mx-auto max-w-6xl scroll-mt-20 px-6 pb-20"
+        >
           <div className="flex flex-col items-center gap-3 pb-12 text-center">
             <Badge variant="secondary">Core calculators</Badge>
             <h2 className="font-heading text-3xl font-semibold tracking-tight sm:text-4xl">
@@ -208,9 +210,7 @@ export default function Home() {
                     variant="outline"
                     className="w-full"
                     nativeButton={false}
-                    render={
-                      <a href={feature.href} />
-                    }
+                    render={<a href={feature.href} />}
                   >
                     {feature.cta}
                     <ArrowRight data-icon="inline-end" />
@@ -261,8 +261,8 @@ export default function Home() {
                 Start planning your next big money move today
               </CardTitle>
               <CardDescription className="w-full max-w-3xl text-base">
-                Estimate a mortgage or project your savings in seconds.
-                No sign-up, no data sharing — just clear numbers.
+                Estimate a mortgage or project your savings in seconds. No
+                sign-up, no data sharing — just clear numbers.
               </CardDescription>
             </CardHeader>
             <CardFooter className="border-0 bg-transparent">
