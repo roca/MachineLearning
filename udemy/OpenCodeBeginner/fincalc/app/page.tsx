@@ -1,6 +1,5 @@
 import {
   ArrowRight,
-  Calculator,
   CalendarClock,
   Home as HomeIcon,
   LineChart,
@@ -9,6 +8,8 @@ import {
   TrendingUp,
 } from "lucide-react";
 
+import { Header } from "@/components/layout/header";
+import { Footer } from "@/components/layout/footer";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -89,16 +90,9 @@ const heroStats = [
 export default function Home() {
   return (
     <div className="flex min-h-screen flex-col bg-background">
-      {/* Header */}
-      <header className="sticky top-0 z-10 w-full border-b bg-background/80 backdrop-blur">
-        <div className="mx-auto flex h-14 max-w-6xl items-center justify-between px-6">
-          <a href="#" className="flex items-center gap-2">
-            <span className="flex size-8 items-center justify-center rounded-lg bg-primary text-primary-foreground">
-              <Calculator data-icon="inline-start" />
-            </span>
-            <span className="font-heading text-sm font-medium">FinCalc</span>
-          </a>
-          <div className="flex items-center gap-3">
+      <Header
+        rightContent={
+          <>
             <Button
               variant="ghost"
               size="sm"
@@ -108,9 +102,9 @@ export default function Home() {
               Features
             </Button>
             <Button size="sm">Get started</Button>
-          </div>
-        </div>
-      </header>
+          </>
+        }
+      />
 
       <main className="flex-1">
         {/* Hero */}
@@ -285,18 +279,7 @@ export default function Home() {
         </section>
       </main>
 
-      {/* Footer */}
-      <footer className="border-t">
-        <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-4 px-6 py-8 sm:flex-row">
-          <p className="text-sm text-muted-foreground">
-            © {new Date().getFullYear()} FinCalc. Built for people who value
-            clear numbers.
-          </p>
-          <p className="text-sm text-muted-foreground">
-            Calculators are estimates, not financial advice.
-          </p>
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 }

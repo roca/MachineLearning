@@ -12,11 +12,13 @@ import {
   YAxis,
 } from "recharts"
 import {
-  Calculator,
   FileSpreadsheet,
   LineChart as LineChartIcon,
   TrendingUp,
 } from "lucide-react"
+
+import { Header } from "@/components/layout/header"
+import { Footer } from "@/components/layout/footer"
 
 import {
   Accordion,
@@ -217,20 +219,13 @@ export default function CompoundInterestCalculator() {
 
   return (
     <div className="flex min-h-screen flex-col bg-background">
-      {/* Header */}
-      <header className="sticky top-0 z-10 w-full border-b bg-background/80 backdrop-blur">
-        <div className="mx-auto flex h-14 max-w-6xl items-center justify-between px-6">
-          <Link href="/" className="flex items-center gap-2">
-            <span className="flex size-8 items-center justify-center rounded-lg bg-primary text-primary-foreground">
-              <Calculator data-icon="inline-start" />
-            </span>
-            <span className="font-heading text-sm font-medium">FinCalc</span>
-          </Link>
+      <Header
+        rightContent={
           <Button size="sm" nativeButton={false} render={<Link href="/" />}>
             All calculators
           </Button>
-        </div>
-      </header>
+        }
+      />
 
       <main className="flex-1">
         <div className="mx-auto max-w-6xl px-6 py-12">
@@ -680,18 +675,7 @@ export default function CompoundInterestCalculator() {
         </div>
       </main>
 
-      {/* Footer */}
-      <footer className="border-t">
-        <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-4 px-6 py-8 sm:flex-row">
-          <p className="text-sm text-muted-foreground">
-            © {new Date().getFullYear()} FinCalc. Built for people who value
-            clear numbers.
-          </p>
-          <p className="text-sm text-muted-foreground">
-            Calculators are estimates, not financial advice.
-          </p>
-        </div>
-      </footer>
+      <Footer />
     </div>
   )
 }
