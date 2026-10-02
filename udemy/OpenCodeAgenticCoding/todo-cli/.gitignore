@@ -1,4 +1,5 @@
-# Compiled binary
+# Compiled binaries (go build -o todo . leaves ./todo behind)
+/todo
 /todo-cli
 
 # Test and coverage artifacts
