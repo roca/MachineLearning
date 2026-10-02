@@ -1,0 +1,6 @@
+# Compiled binary
+/todo-cli
+
+# Test and coverage artifacts
+*.test
+*.out
