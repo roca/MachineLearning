@@ -30,6 +30,6 @@ func main() {
 		log.Fatal(err)
 	}
 
-	fmt.Println("Response from OpenAI:")
+	fmt.Println("Response from Ollama:")
 	fmt.Println(completion)
 }
