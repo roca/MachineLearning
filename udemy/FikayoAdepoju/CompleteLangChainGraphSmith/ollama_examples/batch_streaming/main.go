@@ -19,23 +19,24 @@ func main() {
 	}
 
 	messages := []llms.MessageContent{
+		llms.TextParts(llms.ChatMessageTypeSystem, "Respond to each of the following questions in French."),
 		llms.TextParts(llms.ChatMessageTypeHuman, "Who is the president of the United States?"),
 		llms.TextParts(llms.ChatMessageTypeHuman, "What is the capital of the United States?"),
 		llms.TextParts(llms.ChatMessageTypeHuman, "What is the most popular sport in the United States?"),
-		llms.TextParts(llms.ChatMessageTypeHuman, "Respond to each of the above questions a seperate line."),
 	}
 
 	ctx := context.Background()
 	fmt.Println("Response from Ollama:")
-	completion, err := llm.GenerateContent(ctx, messages, llms.WithStreamingFunc(func(ctx context.Context, chunk []byte) error {
-		fmt.Print(string(chunk))
-		return nil
-	}), llms.WithTemperature(0.7))
+	completion, err := llm.GenerateContent(ctx, messages, llms.WithTemperature(0.7))
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	_ = completion
+	for _, choice := range completion.Choices {
+		fmt.Println(choice.GenerationInfo)
+		fmt.Println(choice.Content)
+	}
+
 	fmt.Println("\n\nDone streaming responses.")
 
 }
